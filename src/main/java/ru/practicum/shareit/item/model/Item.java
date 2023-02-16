@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
@@ -20,9 +19,9 @@ import javax.validation.constraints.Size;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Item {
     int id;
-            @Size(max = 20)
+    @Size(max = 20)
     String name;
-            @Size(max = 200)
+    @Size(max = 200)
     String description;
     boolean available;
     User owner;
