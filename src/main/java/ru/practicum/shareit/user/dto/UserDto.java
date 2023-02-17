@@ -18,6 +18,4 @@ public class UserDto {
 
     public UserDto(String name, String email) {
     }
-
-    
 }
