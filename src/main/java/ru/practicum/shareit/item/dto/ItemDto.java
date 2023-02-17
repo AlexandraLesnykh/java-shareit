@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
 
@@ -15,8 +13,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter @Setter
 public class ItemDto {
-    int id;
+    long id;
 
     @Size(max = 20)
     String name;
@@ -27,31 +26,8 @@ public class ItemDto {
     int owner;
     ItemRequest request;
 
-
-    public ItemDto(String name, String description, boolean available, Integer owner) {
+    public ItemDto(String name, String description, boolean available, Long owner) {
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public int getOwner() {
-        return owner;
-    }
-
-    public ItemRequest getRequest() {
-        return request;
-    }
 }

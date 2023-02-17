@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Item {
-    int id;
+    long id;
     @Size(max = 20)
     String name;
     @Size(max = 200)
@@ -27,6 +27,6 @@ public class Item {
     User owner;
     ItemRequest request;
 
-    public Item(String name, String description, boolean available, Integer integer) {
+    public Item(String name, String description, boolean available, Long integer) {
     }
 }

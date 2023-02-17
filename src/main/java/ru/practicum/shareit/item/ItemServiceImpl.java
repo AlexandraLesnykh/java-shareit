@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    private int generator = 0;
+    private long generator = 0;
 
     private List<Integer> users = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findAll(int ownerId) {
+    public List<Item> findAll(long ownerId) {
         SqlRowSet itemRows = jdbcTemplate.queryForRowSet("SELECT * FROM items WHERE owner=?", ownerId);
         List<Item> itemSQL = new ArrayList<>();
         while (itemRows.next()) {
@@ -41,26 +41,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item findItem(int id) {
-        SqlRowSet itemRows = jdbcTemplate.queryForRowSet("SELECT * FROM items WHERE item_id= ?", id);
-        itemRows.next();
-        if (itemRows.last()) {
-            return getItemBD(itemRows);
-        } else {
-            return null;
+    public Item findItem(long id) {
+        String sqlQuery = "SELECT * FROM items WHERE item_id= ?";
+        List<Item> items = jdbcTemplate.query(sqlQuery, ItemRowMapper::mapRowToItem, id);
+        if (items.size() != 1) {
+            throw new ObjectNotFoundException("hb");
         }
+        return items.get(0);
     }
 
     @Override
-    public Item create(Item item, int ownerId) throws ValidationException {
+    public Item create(Item item, long ownerId) throws ValidationException {
 
-        int checkUserId = jdbcTemplate.queryForObject("SELECT COUNT(user_id) FROM users WHERE user_id=?", Integer.class, ownerId);
-        if (checkUserId == 0) {
-            throw new ObjectNotFoundException("Wrong owner id");
-        }
-        if (item.getName() == null || item.getDescription() == null || !item.isAvailable()) {
-            throw new ValidationException("Wrong request");
-        }
+        checkIdWhileCreate(item, ownerId);
         addItem(item);
         jdbcTemplate.update("INSERT INTO items VALUES (?,?,?,?,?,?)", item.getId(), item.getName(), item.getDescription(),
                 item.isAvailable(), ownerId, item.getRequest());
@@ -70,11 +63,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item update(ItemDto itemDto, int id, int ownerId) {
-        int checkUserId = jdbcTemplate.queryForObject("SELECT owner FROM items WHERE item_id=?", Integer.class, id);
-        if (checkUserId != ownerId) {
-            throw new ObjectNotFoundException("Wrong owner id");
-        }
+    public Item update(ItemDto itemDto, long id, long ownerId) {
+
+        checkIdWhileUpdate(id, ownerId);
         if ((itemDto.getName() == null && itemDto.getDescription() == null) ||
                 (!itemDto.isAvailable() && itemDto.getName() != null && itemDto.getDescription() != null)) {
 
@@ -106,7 +97,7 @@ public class ItemServiceImpl implements ItemService {
         Collection<Item> result = new HashSet<>();
         result.clear();
         for (Item item : allItems) {
-            if (!text.equals("")) {
+            if (!text.isBlank()) {
                 textExistInName = item.getName().toLowerCase().contains(text);
                 textExistInDescription = item.getDescription().toLowerCase().contains(text);
                 if ((textExistInName || textExistInDescription) && item.isAvailable()) {
@@ -120,7 +111,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void maxId() {
-        Integer i = jdbcTemplate.queryForObject("SELECT MAX(item_id) FROM items", Integer.class);
+        Long i = jdbcTemplate.queryForObject("SELECT MAX(item_id) FROM items", Long.class);
         if (i == null) {
             generator = 0;
         } else {
@@ -137,6 +128,23 @@ public class ItemServiceImpl implements ItemService {
         return itemSQL;
     }
 
+    private void checkIdWhileCreate(Item item, long ownerId) throws ValidationException {
+        int checkUserId = jdbcTemplate.queryForObject("SELECT COUNT(user_id) FROM users WHERE user_id=?", Integer.class, ownerId);
+        if (checkUserId == 0) {
+            throw new ObjectNotFoundException("Wrong owner id");
+        }
+        if (item.getName() == null || item.getDescription() == null || !item.isAvailable()) {
+            throw new ValidationException("Wrong request");
+        }
+    }
+
+    private void checkIdWhileUpdate(long id, long ownerId) {
+        int checkUserId = jdbcTemplate.queryForObject("SELECT owner FROM items WHERE item_id=?", Integer.class, id);
+        if (checkUserId != ownerId) {
+            throw new ObjectNotFoundException("Wrong owner id");
+        }
+    }
+
     private void addItem(Item item) {
         if (item.getId() == 0) {
             item.setId(++generator);
@@ -145,7 +153,7 @@ public class ItemServiceImpl implements ItemService {
 
     private Item getItemBD(SqlRowSet itemRows) {
         Item itemSql = new Item();
-        itemSql.setId(itemRows.getInt("item_id"));
+        itemSql.setId(itemRows.getLong("item_id"));
         itemSql.setName(itemRows.getString("name"));
         itemSql.setDescription(itemRows.getString("description"));
         itemSql.setAvailable(itemRows.getBoolean("available"));

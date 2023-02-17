@@ -8,13 +8,13 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ItemService {
-    public Item create(Item item, int ownerId) throws ValidationException;
+    public Item create(Item item, long ownerId) throws ValidationException;
 
-    public Item update(ItemDto item, int id, int ownerId);
+    public Item update(ItemDto item, long id, long ownerId);
 
-    public List<Item> findAll(int ownerId);
+    public List<Item> findAll(long ownerId);
 
-    public Item findItem(int id);
+    public Item findItem(long id);
 
     public Collection<Item> search(String text);
 }

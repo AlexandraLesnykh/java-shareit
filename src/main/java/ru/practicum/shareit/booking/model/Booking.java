@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Booking {
-    int id;
+    long id;
     @Past
     LocalDateTime start;
     @Past

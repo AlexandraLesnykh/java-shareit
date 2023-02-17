@@ -35,7 +35,7 @@ public class ItemController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Item findItem(@PathVariable("id") @NotNull Integer id) {
+    public Item findItem(@PathVariable("id") @NotNull Long id) {
         return itemService.findItem(id);
     }
 
@@ -51,7 +51,7 @@ public class ItemController {
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Item update(@RequestBody @NotNull @Valid ItemDto item, @PathVariable("id") @NotNull Integer id,
+    public Item update(@RequestBody @NotNull @Valid ItemDto item, @PathVariable("id") @NotNull Long id,
                        HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html");
         int ownerId = Integer.parseInt(request.getHeader("X-Sharer-User-Id"));

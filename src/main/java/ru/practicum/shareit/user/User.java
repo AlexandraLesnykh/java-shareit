@@ -17,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
-    int id;
+    long id;
     @NotBlank
     String name;
     @Email@NotBlank
