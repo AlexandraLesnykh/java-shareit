@@ -1,16 +1,12 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exeptions.ActionHasAlreadyDoneException;
 import ru.practicum.shareit.exeptions.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,11 +22,12 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    private  final UserService userService;
+
+    private final UserService userService;
 
     @GetMapping
     public List<User> findAll() {
-   return userService.findAll();
+        return userService.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
