@@ -51,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setUser(findUser(booking.getBookerId()));
         booking.setItem(findItem(booking.getItemId()));
         BookingDto bookingDto = BookingMapper.toBookingDto(booking);
-        if (bookingDto.getBooker().getId() == ownerId) {//done
+        if (bookingDto.getBooker().getId() == ownerId) {
             throw new ObjectNotFoundException("Wrong id");
         }
         if (bookingDto.getStatus() == BookingStatus.APPROVED && approved || bookingDto.getItem().getOwner() != ownerId) {

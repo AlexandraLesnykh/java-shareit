@@ -4,10 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comments.dto.CommentDto;
-import ru.practicum.shareit.request.ItemRequest;
 
-import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
