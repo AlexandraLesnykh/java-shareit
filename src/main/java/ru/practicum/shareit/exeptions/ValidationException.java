@@ -10,7 +10,7 @@ public class ValidationException extends Exception {
     public ValidationException() {
     }
 
-    public ValidationException(final String message) {
-        super(message);
+    public ValidationException(final String error) {
+        super(error);
     }
 }
