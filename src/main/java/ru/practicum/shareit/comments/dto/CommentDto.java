@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 public class CommentDto {
     long id;
+    @NonNull
     String text;
     String authorName;
     LocalDateTime created;

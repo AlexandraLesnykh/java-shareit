@@ -18,7 +18,9 @@ import java.util.List;
 @Setter
 public class ItemDto {
     long id;
+    @NonNull
     String name;
+    @NonNull
     String description;
     boolean available;
     long owner;

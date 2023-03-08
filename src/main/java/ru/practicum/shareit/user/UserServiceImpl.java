@@ -1,26 +1,20 @@
 package ru.practicum.shareit.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exeptions.ActionHasAlreadyDoneException;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
 import ru.practicum.shareit.exeptions.ValidationException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
-    private List<String> emails = new ArrayList<>();
     private final UserRepository repository;
-    private final JdbcTemplate jdbcTemplate;
 
-    public UserServiceImpl(UserRepository repository, JdbcTemplate jdbcTemplate) {
+    public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -36,9 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) throws ValidationException {
-        if (!emails.isEmpty() && emails.contains(user.getEmail())) {
-            throw new ActionHasAlreadyDoneException("Wrong email");
-        } else if (user.getEmail() == null || user.getName() == null) {
+        if (user.getEmail() == null || user.getName() == null) {
             throw new ValidationException("Wrong request");
         }
         repository.save(user);

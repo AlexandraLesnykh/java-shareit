@@ -57,12 +57,4 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     BookingStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "booker_id")
-    @JsonManagedReference
-    @JsonIgnore
-    public User getUser() {
-        return user;
-    }
-
 }
