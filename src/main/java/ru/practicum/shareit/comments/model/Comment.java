@@ -25,7 +25,6 @@ public class Comment {
 
     @Size(max = 256)
     @Column(name = "comment_text")
-
     String text;
 
     @Column(name = "item_id")

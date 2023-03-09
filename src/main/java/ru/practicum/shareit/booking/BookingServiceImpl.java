@@ -35,14 +35,13 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto create(Booking booking, long ownerId) throws ValidationException {
         checkIdsWhileCreate(booking, ownerId);
         checkAvailable(booking);
+        booking.setItem(itemRepository.findById(booking.getItemId()).get());
+        if (booking.getItem().getOwner() == ownerId) {
+            throw new ObjectNotFoundException("Wrong id");
+        }
         booking.setStatus(BookingStatus.WAITING);
         booking.setBookerId(ownerId);
         booking.setUser(userRepository.findById(booking.getBookerId()).get());
-        booking.setItem(itemRepository.findById(booking.getItemId()).get());
-        if (booking.getItem().getOwner() == ownerId) {
-            throw new ObjectNotFoundException("g");
-        }
-
         Booking bookingNew = repository.save(booking);
         return BookingMapper.toBookingDto(bookingNew);
     }
@@ -111,7 +110,9 @@ public class BookingServiceImpl implements BookingService {
         for (Booking booking : bookings) {
             checkIdsWhileCreate(booking, ownerId);
             booking.setItem(itemRepository.findById(booking.getItemId()).get());
-            booking.setUser(userRepository.findById(booking.getBookerId()).get());
+            User user = userRepository.findById(booking.getBookerId())
+                    .orElseThrow(() -> new javax.validation.ValidationException("Wrong ID"));
+            booking.setUser(user);
             bookingDtos.add(BookingMapper.toBookingDto(booking));
         }
         switch (state) {

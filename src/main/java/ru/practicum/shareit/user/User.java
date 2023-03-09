@@ -28,8 +28,7 @@ public class User {
 
     String name;
 
-    @Email
-    String email;
+    @Email String email;
 
     @Transient
     Set<Booking> bookings = new HashSet<>();

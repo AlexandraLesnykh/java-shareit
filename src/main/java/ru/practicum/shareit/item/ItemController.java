@@ -63,5 +63,4 @@ public class ItemController {
                                  @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws ValidationException {
         return itemService.addComment(comment, id, ownerId);
     }
-
 }
