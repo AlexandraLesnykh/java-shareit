@@ -2,22 +2,23 @@ package ru.practicum.shareit.item;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comments.dto.CommentDto;
+import ru.practicum.shareit.comments.model.Comment;
 import ru.practicum.shareit.exeptions.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
  */
 @RestController
-@RequestMapping("/items")
+@RequestMapping(value = "/items",
+        consumes = MediaType.ALL_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class ItemController {
 
     private final ItemService itemService;
@@ -27,39 +28,39 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> findAll(HttpServletRequest request, HttpServletResponse response) {
-        response.setContentType("text/html");
-        int ownerId = Integer.parseInt(request.getHeader("X-Sharer-User-Id"));
-
+    public List<Item> findAll(@RequestHeader(value = "X-Sharer-User-Id") long ownerId) {
         return itemService.findAll(ownerId);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Item findItem(@PathVariable("id") @NotNull Long id) {
-        return itemService.findItem(id);
+    @GetMapping(value = "/{id}")
+    public Item findItem(@PathVariable("id") @NotNull Long id,
+                            @RequestHeader(value = "X-Sharer-User-Id") long ownerId) {
+        return itemService.findItem(id, ownerId);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Item create(@RequestBody @Valid Item item, HttpServletRequest request, HttpServletResponse response) throws ValidationException {
+    @PostMapping
+    public Item create(@RequestBody @Valid Item item, @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws ValidationException {
 
-        if (!item.isAvailable() || item.getName().isEmpty()) {
+        if (!item.isAvailable() || item.getName().isEmpty() || item.getDescription() == null) {
             throw new ValidationException("Error");
         }
-        response.setContentType("text/html");
-        int ownerId = Integer.parseInt(request.getHeader("X-Sharer-User-Id"));
         return itemService.create(item, ownerId);
     }
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Item update(@RequestBody @NotNull @Valid ItemDto item, @PathVariable("id") @NotNull Long id,
-                       HttpServletRequest request, HttpServletResponse response) {
-        response.setContentType("text/html");
-        int ownerId = Integer.parseInt(request.getHeader("X-Sharer-User-Id"));
+    @PatchMapping(value = "/{id}")
+    public Item update(@RequestBody @Valid ItemDto item, @PathVariable("id") @NotNull Long id,
+                       @RequestHeader(value = "X-Sharer-User-Id") long ownerId) {
         return itemService.update(item, id, ownerId);
     }
 
     @GetMapping(value = "/search")
-    public Collection<Item> search(@RequestParam String text) {
+    public List<Item> search(@RequestParam String text) {
         return itemService.search(text);
+    }
+
+    @PostMapping(value = "/{id}/comment")
+    public CommentDto addComment(@RequestBody @Valid Comment comment, @PathVariable("id") @NotNull Long id,
+                                 @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws ValidationException {
+        return itemService.addComment(comment, id, ownerId);
     }
 }

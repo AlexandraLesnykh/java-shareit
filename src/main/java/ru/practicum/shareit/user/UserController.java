@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exeptions.ValidationException;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User update(@RequestBody @NotNull @Valid UserDto user, @PathVariable("id") @NotNull Long id) {
+    public User update(@RequestBody @Valid User user, @PathVariable("id") @NotNull Long id) {
         return userService.update(user, id);
     }
 

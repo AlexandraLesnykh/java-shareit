@@ -1,164 +1,191 @@
 package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.comments.CommentMapper;
+import ru.practicum.shareit.comments.CommentRepository;
+import ru.practicum.shareit.comments.dto.CommentDto;
+import ru.practicum.shareit.comments.model.Comment;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
 import ru.practicum.shareit.exeptions.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    private long generator = 0;
+    private final ItemRepository repository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
-    private List<Integer> users = new ArrayList<>();
-
-    private final JdbcTemplate jdbcTemplate;
-
-    public ItemServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        maxId();
+    public ItemServiceImpl(ItemRepository repository, BookingRepository bookingRepository, CommentRepository commentRepository, UserRepository userRepository) {
+        this.repository = repository;
+        this.bookingRepository = bookingRepository;
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public List<Item> findAll(long ownerId) {
-        SqlRowSet itemRows = jdbcTemplate.queryForRowSet("SELECT * FROM items WHERE owner=?", ownerId);
-        List<Item> itemSQL = new ArrayList<>();
-        while (itemRows.next()) {
-            itemSQL.add(getItemBD(itemRows));
-        }
-        return itemSQL;
-    }
-
-    @Override
-    public Item findItem(long id) {
-        String sqlQuery = "SELECT * FROM items WHERE item_id= ?";
-        List<Item> items = jdbcTemplate.query(sqlQuery, ItemRowMapper::mapRowToItem, id);
-        if (items.size() != 1) {
-            throw new ObjectNotFoundException("hb");
-        }
-        return items.get(0);
-    }
-
-    @Override
-    public Item create(Item item, long ownerId) throws ValidationException {
-
-        checkIdWhileCreate(item, ownerId);
-        addItem(item);
-        jdbcTemplate.update("INSERT INTO items VALUES (?,?,?,?,?,?)", item.getId(), item.getName(), item.getDescription(),
-                item.isAvailable(), ownerId, item.getRequest());
-        SqlRowSet itemRows = jdbcTemplate.queryForRowSet("SELECT * FROM items WHERE item_id= ?", item.getId());
-        itemRows.next();
-        return getItemBD(itemRows);
-    }
-
-    @Override
-    public Item update(ItemDto itemDto, long id, long ownerId) {
-
-        checkIdWhileUpdate(id, ownerId);
-        if ((itemDto.getName() == null && itemDto.getDescription() == null) ||
-                (!itemDto.isAvailable() && itemDto.getName() != null && itemDto.getDescription() != null)) {
-
-            jdbcTemplate.update("UPDATE items SET available=? WHERE item_id=?",
-                    itemDto.isAvailable(), id);
-        }
-        if (itemDto.getName() != null) {
-            jdbcTemplate.update("UPDATE items SET name=? WHERE item_id=?",
-                    itemDto.getName(), id);
-        }
-        if (itemDto.getDescription() != null) {
-            jdbcTemplate.update("UPDATE items SET description=? WHERE item_id=?",
-                    itemDto.getDescription(), id);
-        }
-        SqlRowSet itemRows = jdbcTemplate.queryForRowSet("SELECT * FROM items WHERE item_id= ?", id);
-        if (itemRows.next()) {
-            return getItemBD(itemRows);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Collection<Item> search(String text) {
+    public List<Item> search(String text) {
         text = text.toLowerCase();
         boolean textExistInName = false;
         boolean textExistInDescription = false;
         Collection<Item> allItems = findAll();
-        Collection<Item> result = new HashSet<>();
+        Collection<Item> resultBeforeSort = new HashSet<>();
+        List<Item> result = new ArrayList<>();
+        List<Long> resulIds = new ArrayList<>();
+        resultBeforeSort.clear();
+        resulIds.clear();
         result.clear();
         for (Item item : allItems) {
             if (!text.isBlank()) {
                 textExistInName = item.getName().toLowerCase().contains(text);
                 textExistInDescription = item.getDescription().toLowerCase().contains(text);
                 if ((textExistInName || textExistInDescription) && item.isAvailable()) {
-                    result.add(item);
+                    resultBeforeSort.add(item);
+                    resulIds.add(item.getId());
                 }
             } else {
-                return new HashSet<>();
+                return new ArrayList<>();
+            }
+        }
+        resulIds = resulIds.stream()
+                .sorted()
+                .collect(Collectors.toList());
+        for (Long id : resulIds) {
+            for (Item item : resultBeforeSort) {
+                if (item.getId() == id) {
+                    result.add(item);
+                }
             }
         }
         return result;
     }
 
-    private void maxId() {
-        Long i = jdbcTemplate.queryForObject("SELECT MAX(item_id) FROM items", Long.class);
-        if (i == null) {
-            generator = 0;
-        } else {
-            generator = i;
+    @Override
+    public Item create(Item item, long ownerId) throws ValidationException {
+        User checkUser = userRepository.findById(ownerId).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
+        item.setOwner(ownerId);
+        repository.save(item);
+        return repository.save(item);
+    }
+
+    @Override
+    public Item update(ItemDto itemDto, long id, long ownerId) {
+        Item item1 = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
+        checkIdWhileUpdate(id, ownerId);
+        if ((itemDto.getName() == null && itemDto.getDescription() == null) ||
+                (!itemDto.isAvailable() && itemDto.getName() != null && itemDto.getDescription() != null)) {
+            item1.setAvailable(itemDto.isAvailable());
+        }
+        if (itemDto.getName() != null) {
+            item1.setName(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null) {
+            item1.setDescription(itemDto.getDescription());
+        }
+        return repository.save(item1);
+    }
+
+    @Override
+    public List<Item> findAll(long ownerId) {
+        List<Item> items = new ArrayList<>(repository.findAll());
+        List<Item> listForReturn = new ArrayList<>();
+        for (Item item : items) {
+            if (item.getOwner() == ownerId) {
+
+                listForReturn.add(addBookingsAndCommentToItem(item.getId(), ownerId));
+            }
+        }
+        return listForReturn;
+    }
+
+    @Override
+    public Item findItem(long id, long ownerId) {
+        return addBookingsAndCommentToItem(id, ownerId);
+    }
+
+    @Override
+    public CommentDto addComment(Comment comment, long itemId, long ownerId) throws ValidationException {
+        if (comment.getText().isEmpty()) {
+            throw new ValidationException();
+        }
+        User user = userRepository.findById(ownerId).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
+        Optional<Booking> booking = bookingRepository.findByBookerIdAndItemIdAndEndBefore(ownerId, itemId, LocalDateTime.now());
+        if (booking.isEmpty()) {
+            throw new ValidationException("Wrong id");
+        }
+        comment.setAuthorId(ownerId);
+        comment.setAuthor(user);
+        comment.setItemId(itemId);
+        comment.setCreated(LocalDateTime.now());
+        commentRepository.save(comment);
+        return CommentMapper.toCommentDto(comment);
+    }
+
+    private Item addBookingsAndCommentToItem(long id, long ownerId) {
+        Item item = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
+        if (!bookingRepository.findBookingByItemId(id).isEmpty()) {
+            Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndStatusAndEndBeforeOrderByEnd(id,
+                    BookingStatus.APPROVED, LocalDateTime.now());
+            Optional<Booking> nextBooking = bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStart(id,
+                    BookingStatus.APPROVED, LocalDateTime.now());
+            if (lastBooking.isEmpty() && nextBooking.isEmpty() || item.getOwner() != ownerId) {
+                item.setLastBooking(null);
+                item.setNextBooking(null);
+            } else {
+                item.setLastBooking(lastBooking.get());
+                item.setNextBooking(nextBooking.get());
+            }
+        }
+        List<Comment> comments = commentRepository.findByAuthorIdAndItemId(ownerId, id);
+        if (comments.isEmpty()) {
+            comments.addAll(commentRepository.findByItemId(id));
+            for (Comment comment : comments) {
+                if (item.getOwner() != ownerId) {
+                    comments.remove(comment);
+                }
+            }
+        }
+        List<CommentDto> commentDtos = new ArrayList<>();
+        for (Comment comment : comments) {
+            User user = userRepository.findById(comment.getAuthorId()).orElseThrow(() -> new javax.validation.ValidationException("Wrong ID"));
+            comment.setAuthor(user);
+            comment.setAuthorId(user.getId());
+            comment.setItemId(id);
+            comment.setCreated(LocalDateTime.now());
+            commentDtos.add(CommentMapper.toCommentDto(comment));
+        }
+        item.setComments(commentDtos);
+        return item;
+    }
+
+    private void checkIdWhileUpdate(long id, long ownerId) {
+        Item item = repository.findById(id).get();
+        if (item.getOwner() != ownerId) {
+            throw new ObjectNotFoundException("Wrong owner id");
         }
     }
 
     private List<Item> findAll() {
-        SqlRowSet itemRows = jdbcTemplate.queryForRowSet("SELECT * FROM items");
-        List<Item> itemSQL = new ArrayList<>();
-        while (itemRows.next()) {
-            itemSQL.add(getItemBD(itemRows));
-        }
-        return itemSQL;
+        return repository.findAll();
     }
 
-    private void checkIdWhileCreate(Item item, long ownerId) throws ValidationException {
-        int checkUserId = jdbcTemplate.queryForObject("SELECT COUNT(user_id) FROM users WHERE user_id=?", Integer.class, ownerId);
-        if (checkUserId == 0) {
-            throw new ObjectNotFoundException("Wrong owner id");
-        }
-        if (item.getName() == null || item.getDescription() == null || !item.isAvailable()) {
-            throw new ValidationException("Wrong request");
-        }
+    @Override
+    public Item findById(long id) {
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Wron id"));
     }
-
-    private void checkIdWhileUpdate(long id, long ownerId) {
-        int checkUserId = jdbcTemplate.queryForObject("SELECT owner FROM items WHERE item_id=?", Integer.class, id);
-        if (checkUserId != ownerId) {
-            throw new ObjectNotFoundException("Wrong owner id");
-        }
-    }
-
-    private void addItem(Item item) {
-        if (item.getId() == 0) {
-            item.setId(++generator);
-        }
-    }
-
-    private Item getItemBD(SqlRowSet itemRows) {
-        Item itemSql = new Item();
-        itemSql.setId(itemRows.getLong("item_id"));
-        itemSql.setName(itemRows.getString("name"));
-        itemSql.setDescription(itemRows.getString("description"));
-        itemSql.setAvailable(itemRows.getBoolean("available"));
-        return itemSql;
-    }
-
 
 }
