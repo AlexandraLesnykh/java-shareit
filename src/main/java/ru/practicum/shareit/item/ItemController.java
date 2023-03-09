@@ -28,12 +28,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> findAll(@RequestHeader(value = "X-Sharer-User-Id") long ownerId) {
+    public List<Item> findAll(@RequestHeader(value = "X-Sharer-User-Id") long ownerId) {
         return itemService.findAll(ownerId);
     }
 
     @GetMapping(value = "/{id}")
-    public ItemDto findItem(@PathVariable("id") @NotNull Long id,
+    public Item findItem(@PathVariable("id") @NotNull Long id,
                             @RequestHeader(value = "X-Sharer-User-Id") long ownerId) {
         return itemService.findItem(id, ownerId);
     }

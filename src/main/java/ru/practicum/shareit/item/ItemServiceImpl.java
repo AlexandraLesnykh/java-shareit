@@ -100,9 +100,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findAll(long ownerId) {
+    public List<Item> findAll(long ownerId) {
         List<Item> items = new ArrayList<>(repository.findAll());
-        List<ItemDto> listForReturn = new ArrayList<>();
+        List<Item> listForReturn = new ArrayList<>();
         for (Item item : items) {
             if (item.getOwner() == ownerId) {
 
@@ -113,7 +113,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto findItem(long id, long ownerId) {
+    public Item findItem(long id, long ownerId) {
         return addBookingsAndCommentToItem(id, ownerId);
     }
 
@@ -135,7 +135,7 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.toCommentDto(comment);
     }
 
-    private ItemDto addBookingsAndCommentToItem(long id, long ownerId) {
+    private Item addBookingsAndCommentToItem(long id, long ownerId) {
         Item item = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
         if (!bookingRepository.findBookingByItemId(id).isEmpty()) {
             Optional<Booking> lastBooking = bookingRepository.findFirstByItemIdAndStatusAndEndBeforeOrderByEnd(id,
@@ -169,8 +169,7 @@ public class ItemServiceImpl implements ItemService {
             commentDtos.add(CommentMapper.toCommentDto(comment));
         }
         item.setComments(commentDtos);
-
-        return ItemMapper.toItemDto(item);
+        return item;
     }
 
     private void checkIdWhileUpdate(long id, long ownerId) {
@@ -182,6 +181,11 @@ public class ItemServiceImpl implements ItemService {
 
     private List<Item> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Item findById(long id) {
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Wron id"));
     }
 
 }

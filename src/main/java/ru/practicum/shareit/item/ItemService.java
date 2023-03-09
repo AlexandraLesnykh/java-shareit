@@ -13,11 +13,13 @@ public interface ItemService {
 
     Item update(ItemDto item, long id, long ownerId);
 
-    List<ItemDto> findAll(long ownerId);
+    List<Item> findAll(long ownerId);
 
-    ItemDto findItem(long id, long ownerId);
+    Item findItem(long id, long ownerId);
 
     List<Item> search(String text);
 
     CommentDto addComment(Comment comment, long itemId, long ownerId) throws ValidationException;
+
+    Item findById(long id);
 }
