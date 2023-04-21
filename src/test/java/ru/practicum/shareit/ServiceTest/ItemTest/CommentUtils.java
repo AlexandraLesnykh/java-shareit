@@ -4,8 +4,11 @@ import ru.practicum.shareit.comments.model.Comment;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public class CommentUtils {
     public CommentUtils() {
@@ -30,7 +33,7 @@ public class CommentUtils {
                 .stream()
                 .peek(comment -> comment.setId(0L))
                 .peek(comment -> comment.setCreated(null))
-                .toList();
+                .collect(toList());
     }
 
     private static Comment getComments(Long id, String text, Long itemId, Long authorId, LocalDateTime created) {

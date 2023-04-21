@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class ItemRequestServiceTestUtils {
     public ItemRequestServiceTestUtils() {
     }
@@ -29,7 +31,7 @@ public class ItemRequestServiceTestUtils {
         return getItemRequest()
                 .stream()
                 .peek(itemRequest -> itemRequest.setId(0L))
-                .toList();
+                .collect(toList());
     }
 
     private static ItemRequest getItemRequests(Long id, String description, Long requestor, LocalDateTime created) {

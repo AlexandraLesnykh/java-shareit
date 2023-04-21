@@ -6,6 +6,8 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class ItemServiceTestUtils {
 
     public ItemServiceTestUtils() {
@@ -30,7 +32,7 @@ public class ItemServiceTestUtils {
                 .stream()
                 .peek(item -> item.setId(0L))
                 .peek(item -> item.setOwner(0L))
-                .toList();
+                .collect(toList());
     }
 
     public static Item getItemAfterUpdate(Item item, long id) {

@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class BookingServiceTestUtils {
     public BookingServiceTestUtils() {
     }
@@ -31,8 +33,7 @@ public class BookingServiceTestUtils {
         return getBookings()
                 .stream()
                 .peek(booking -> booking.setId(0L))
-                //   .peek(booking -> booking.s(0L))
-                .toList();
+                .collect(toList());
     }
 
     private static Booking getBookings(Long id, LocalDateTime start, LocalDateTime end, Long itemId, Long bookerId,

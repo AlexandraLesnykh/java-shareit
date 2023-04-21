@@ -6,6 +6,8 @@ import ru.practicum.shareit.user.User;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class UserServiceTestUtils {
 
     public UserServiceTestUtils() {
@@ -31,7 +33,7 @@ public class UserServiceTestUtils {
         return getUsers()
                 .stream()
                 .peek(user -> user.setId(0L))
-                .toList();
+                .collect(toList());
     }
 
     public static User getUserAfterUpdate(User user, long id) {
