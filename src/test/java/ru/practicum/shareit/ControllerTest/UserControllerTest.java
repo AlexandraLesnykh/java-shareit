@@ -144,7 +144,7 @@ public class UserControllerTest {
     @Test
     @SneakyThrows
     void deleteUserTest() {
-        Long id = 1l;
+        Long id = 1L;
         List<User> users = new ArrayList<>();
         when(userService.create(any())).thenReturn(user);
 
@@ -157,6 +157,4 @@ public class UserControllerTest {
         mvc.perform(delete("/users/{id}", id))
                 .andExpect(status().isOk());
     }
-
-
 }
