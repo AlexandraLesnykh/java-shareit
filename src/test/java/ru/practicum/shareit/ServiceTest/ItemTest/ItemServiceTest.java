@@ -377,8 +377,8 @@ public class ItemServiceTest {
         when(bookingRepository.findBookingByItemId(id)).thenReturn(bookings);
         Booking nextBooking = BookingServiceTestUtils.getBooking(2L);
         nextBooking.setStatus(BookingStatus.APPROVED);
-        when(bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStart(id, BookingStatus.APPROVED,
-                LocalDateTime.now())).thenReturn(Optional.of(nextBooking));
+        when(bookingRepository.findFirstByItemIdAndStatusAndStartAfterOrderByStart(eq(id), eq(BookingStatus.APPROVED),
+                any(LocalDateTime.class))).thenReturn(Optional.of(nextBooking));
         Item item = itemService.findItem(id, ownerId);
 
         Assertions.assertEquals("An umbrella", item.getName());
@@ -396,8 +396,8 @@ public class ItemServiceTest {
         when(itemRepository.findById(id)).thenReturn(Optional.ofNullable(ItemServiceTestUtils.getItem(id)));
         List<Booking> bookings = List.of(BookingServiceTestUtils.getBooking(1L), BookingServiceTestUtils.getBooking(2L));
         when(bookingRepository.findBookingByItemId(id)).thenReturn(bookings);
-        when(bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(id, BookingStatus.APPROVED,
-                LocalDateTime.now())).thenReturn(Optional.ofNullable(BookingServiceTestUtils.getBooking(1L)));
+        when(bookingRepository.findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(eq(id), eq(BookingStatus.APPROVED),
+                any(LocalDateTime.class))).thenReturn(Optional.ofNullable(BookingServiceTestUtils.getBooking(1L)));
         Item item = itemService.findItem(id, ownerId);
 
         Assertions.assertEquals("An umbrella", item.getName());

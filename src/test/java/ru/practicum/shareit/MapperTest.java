@@ -47,6 +47,7 @@ public class MapperTest {
 
     @Test
     void toItemDtoTest() {
+        item.setRequestId(5L);
         ItemDto itemDto = ItemMapper.toItemDto(item);
         Assertions.assertAll(
                 () -> Assertions.assertEquals(itemDto.getId(), item.getId()),
