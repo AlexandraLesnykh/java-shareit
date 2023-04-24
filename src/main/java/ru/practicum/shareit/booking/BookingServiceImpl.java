@@ -165,7 +165,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingForReturn;
     }
 
-    private List<BookingDto> getListFromPage(PageRequest pageRequest, List<BookingDto> listForReturn){
+    private List<BookingDto> getListFromPage(PageRequest pageRequest, List<BookingDto> listForReturn) {
         final int start = (int) pageRequest.getOffset();
         final int end = Math.min((start +  pageRequest.getPageSize()), listForReturn.size());
         Page<BookingDto> page = new PageImpl<>(listForReturn.subList(start, end), pageRequest, listForReturn.size());

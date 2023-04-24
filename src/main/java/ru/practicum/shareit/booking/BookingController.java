@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -71,5 +70,4 @@ public class BookingController {
         Integer pageNumber = from;
         return bookingService.findAll(state, ownerId, PageRequest.of(from/size, size));
     }
-
 }
