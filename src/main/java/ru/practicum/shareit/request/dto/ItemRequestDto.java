@@ -17,11 +17,7 @@ import java.util.List;
 @Setter
 public class ItemRequestDto {
     long id;
-
     String description;
-
-    //User requestor;
-
     LocalDateTime created;
     List<Item> items;
 }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -68,11 +69,7 @@ public class BookingController {
                                     @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                     @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) throws ValidationException {
         Integer pageNumber = from;
-        if (from == 4 && size == 2) {
-            pageNumber = 7;
-            size = 1;
-        }
-        return bookingService.findAll(state, ownerId, PageRequest.of(pageNumber, size));
+        return bookingService.findAll(state, ownerId, PageRequest.of(from/size, size));
     }
 
 }

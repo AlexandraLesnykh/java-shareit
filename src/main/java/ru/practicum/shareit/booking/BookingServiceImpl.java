@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -85,35 +86,31 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAll(String state, long ownerId, PageRequest pageRequest) throws ValidationException {
-        List<BookingDto> bookingDtos = findAllGeneral(state, ownerId, pageRequest);
+        List<BookingDto> bookingDtos = findAllGeneral(state, ownerId);
         List<BookingDto> listForReturn = new ArrayList<>();
-        //listForReturn.clear();
         for (BookingDto bookingDto : bookingDtos) {
             if (bookingDto.getBooker().getId() == ownerId) {
                 listForReturn.add(bookingDto);
             }
         }
-
-        return listForReturn;
+       return getListFromPage(pageRequest, listForReturn);
     }
 
     @Override
     public List<BookingDto> findAllWithOwner(String state, long ownerId, PageRequest pageRequest) throws ValidationException {
-        List<BookingDto> bookingDtos = findAllGeneral(state, ownerId, pageRequest);
+        List<BookingDto> bookingDtos = findAllGeneral(state, ownerId);
         List<BookingDto> listForReturn = new ArrayList<>();
         for (BookingDto bookingDto : bookingDtos) {
             if (bookingDto.getItem().getOwner() == ownerId) {
                 listForReturn.add(bookingDto);
             }
         }
-        return listForReturn;
+        return getListFromPage(pageRequest, listForReturn);
     }
 
-    private List<BookingDto> findAllGeneral(String state, long ownerId, PageRequest pageRequest) throws ValidationException {
+    private List<BookingDto> findAllGeneral(String state, long ownerId) throws ValidationException {
 
-        //  Page<Booking> bookingsPage = repository.findAll(Sort.by(Sort.Direction.DESC, "start"), pageRequest);
-        Page<Booking> bookingsPage = repository.findAllByOrderByStartDesc(pageRequest);
-        List<Booking> bookings = bookingsPage.getContent();
+        List<Booking> bookings = repository.findAllByOrderByStartDesc();
         List<BookingDto> bookingDtos = new ArrayList<>();
         List<BookingDto> bookingForReturn = new ArrayList<>();
         for (Booking booking : bookings) {
@@ -125,6 +122,7 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case "ALL":
                 bookingForReturn.addAll(bookingDtos);
+                break;
             case "CURRENT":
                 for (BookingDto bookingDto : bookingDtos) {
                     if (bookingDto.getStart().isBefore(LocalDateTime.now()) &&
@@ -165,6 +163,13 @@ public class BookingServiceImpl implements BookingService {
                 throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
         return bookingForReturn;
+    }
+
+    private List<BookingDto> getListFromPage(PageRequest pageRequest, List<BookingDto> listForReturn){
+        final int start = (int) pageRequest.getOffset();
+        final int end = Math.min((start +  pageRequest.getPageSize()), listForReturn.size());
+        Page<BookingDto> page = new PageImpl<>(listForReturn.subList(start, end), pageRequest, listForReturn.size());
+        return page.getContent();
     }
 
     private void checkIdsWhileCreate(Booking booking, long ownerId) {

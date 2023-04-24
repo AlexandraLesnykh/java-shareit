@@ -60,8 +60,7 @@ public class BookingServiceTest {
         Long ownerId = 1L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
@@ -76,8 +75,7 @@ public class BookingServiceTest {
         Long ownerId = 1L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
@@ -93,8 +91,7 @@ public class BookingServiceTest {
         Long bookerId = 10L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(bookerId)).thenThrow(new ObjectNotFoundException("Wrong ID"));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
@@ -110,8 +107,7 @@ public class BookingServiceTest {
         Long ownerId = 3L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(2L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
@@ -126,8 +122,7 @@ public class BookingServiceTest {
         Long ownerId = 1L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
@@ -142,8 +137,7 @@ public class BookingServiceTest {
         Long ownerId = 3L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(2L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
@@ -158,8 +152,7 @@ public class BookingServiceTest {
         Long ownerId = 2L;
         Long itemId = 3L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(4L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
@@ -174,8 +167,7 @@ public class BookingServiceTest {
         Long bookerId = 1L;
         Long itemId = 10L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(bookerId)).thenReturn(Optional.ofNullable(getUser(bookerId)));
         when(itemRepository.findById(itemId)).thenThrow(new ObjectNotFoundException("Wrong id"));
 
@@ -191,14 +183,13 @@ public class BookingServiceTest {
         Long ownerId = 1L;
         Long itemId = 3L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(4L));
-        Page<Booking> page = new PageImpl<>(bookingList);
-        when(bookingRepository.findAllByOrderByStartDesc(PageRequest.of(0, 10))).thenReturn(page);
+        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(userRepository.findById(2L)).thenReturn(Optional.ofNullable(getUser(2L)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
         List<BookingDto> bookings = bookingService.findAllWithOwner("ALL", ownerId, PageRequest.of(0, 10));
-        Assertions.assertEquals(2, bookings.size());
+        Assertions.assertEquals(1, bookings.size());
     }
 
     @Test
