@@ -1,8 +1,6 @@
 package ru.practicum.shareit.ServiceTest.BookingTest;
 
 import org.junit.jupiter.api.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingService;
