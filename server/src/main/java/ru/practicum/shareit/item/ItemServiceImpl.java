@@ -112,7 +112,7 @@ public class ItemServiceImpl implements ItemService {
             }
         }
         ids = ids.stream()
-                .sorted()
+                .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
         for (Long id : ids) {
             for (Item item : list) {
