@@ -64,23 +64,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(user.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(user.getName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
-    }
-    
-    @Test
-    @SneakyThrows
-    void findAllTest() {
-        List<User> userList = List.of(user, user1);
-        when(userService.findAll()).thenReturn(userList);
 
-        mvc.perform(get("/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(user.getId()), Long.class))
-                .andExpect(jsonPath("$[0].name", is(user.getName())))
-                .andExpect(jsonPath("$[0].email", is(user.getEmail())))
-                .andExpect(jsonPath("$[1].id", is(user1.getId()), Long.class))
-                .andExpect(jsonPath("$[1].name", is(user1.getName())))
-                .andExpect(jsonPath("$[1].email", is(user1.getEmail())));
     }
 
     @Test
@@ -97,6 +81,23 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(user.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(user.getName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
+    }
+
+    @Test
+    @SneakyThrows
+    void findAllTest() {
+        List<User> userList = List.of(user, user1);
+        when(userService.findAll()).thenReturn(userList);
+
+        mvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(user.getId()), Long.class))
+                .andExpect(jsonPath("$[0].name", is(user.getName())))
+                .andExpect(jsonPath("$[0].email", is(user.getEmail())))
+                .andExpect(jsonPath("$[1].id", is(user1.getId()), Long.class))
+                .andExpect(jsonPath("$[1].name", is(user1.getName())))
+                .andExpect(jsonPath("$[1].email", is(user1.getEmail())));
     }
 
     @Test
