@@ -1,23 +1,19 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.comments.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class ItemRequestDto {
+public class CommentDto {
     long id;
-    String description;
+    @NonNull
+    String text;
+    String authorName;
     LocalDateTime created;
-    List<Item> items;
 }
