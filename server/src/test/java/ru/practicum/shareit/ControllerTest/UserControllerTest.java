@@ -65,6 +65,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(user.getName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
     }
+    
     @Test
     @SneakyThrows
     void findAllTest() {
