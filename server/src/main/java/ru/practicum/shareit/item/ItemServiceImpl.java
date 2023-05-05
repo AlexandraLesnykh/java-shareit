@@ -102,13 +102,26 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> findAll(long ownerId) {
         List<Item> items = new ArrayList<>(repository.findAll());
+        List<Item> list = new ArrayList<>();
         List<Item> listForReturn = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
         for (Item item : items) {
             if (item.getOwner() == ownerId) {
-                listForReturn.add(addBookingsAndCommentToItem(item.getId(), ownerId));
+                list.add(addBookingsAndCommentToItem(item.getId(), ownerId));
+                ids.add(item.getId());
             }
         }
-        return listForReturn;
+        ids = ids.stream()
+                .sorted()
+                .collect(Collectors.toList());
+        for (Long id : ids) {
+            for (Item item : list) {
+                if (item.getId() == id) {
+                    listForReturn.add(item);
+                }
+            }
+        }
+        return list;
     }
 
     @Override
