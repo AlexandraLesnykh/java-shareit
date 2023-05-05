@@ -12,6 +12,7 @@
 	</module>
 	<module name="TreeWalker">
 		<module name="IllegalImport">
+			<property name="regexp" value="true"/>
 			<property name="illegalPkgs" value=".*\.shaded\..*"/>
 		</module>
 		<module name="OuterTypeFilename"/>
