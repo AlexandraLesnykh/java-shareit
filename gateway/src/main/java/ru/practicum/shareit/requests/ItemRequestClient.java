@@ -29,7 +29,7 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> create(ItemRequestRequestDto itemRequestDto, long ownerId) {
-        if(itemRequestDto.getDescription() == null) {
+        if (itemRequestDto.getDescription() == null) {
             return new ResponseEntity<>("Wrong request", HttpStatus.BAD_REQUEST);
         }
         return post("", ownerId, itemRequestDto);

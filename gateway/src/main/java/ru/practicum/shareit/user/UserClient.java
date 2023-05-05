@@ -1,7 +1,5 @@
 package ru.practicum.shareit.user;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -27,8 +25,8 @@ public class UserClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getUser(long Id) {
-        return get("/" + Id);
+    public ResponseEntity<Object> getUser(long id) {
+        return get("/" + id);
     }
 
     public ResponseEntity<Object> saveUser(UserRequestDto requestDto) {
@@ -46,7 +44,7 @@ public class UserClient extends BaseClient {
         return patch("/" + id, requestDto);
     }
 
-    public ResponseEntity<Object> deleteUser(long Id) {
-        return delete("/" + Id);
+    public ResponseEntity<Object> deleteUser(long id) {
+        return delete("/" + id);
     }
 }
