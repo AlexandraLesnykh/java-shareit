@@ -67,19 +67,6 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
     }
     
-/*
-    @Test
-    @SneakyThrows
-    void createTestWrongEmail() {
-        user.setEmail("llf");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-*/
     @Test
     @SneakyThrows
     void findAllTest() {
