@@ -64,7 +64,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(user.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(user.getName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
-        
+
     }
 
     @Test
@@ -115,20 +115,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(user.getName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
     }
-
-    /*  @Test
-      @SneakyThrows
-      void updateTestFailWrongEmail() {
-          Long id = 1L;
-          user.setEmail("dfgd");
-          mvc.perform(patch("/users/{id}", id)
-                          .content(mapper.writeValueAsString(user))
-                          .characterEncoding(StandardCharsets.UTF_8)
-                          .contentType(MediaType.APPLICATION_JSON)
-                          .accept(MediaType.APPLICATION_JSON))
-                  .andExpect(status().is4xxClientError());
-      }
-  */
+    
     @Test
     @SneakyThrows
     void deleteUserTest() {
