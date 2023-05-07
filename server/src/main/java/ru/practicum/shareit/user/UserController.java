@@ -3,7 +3,7 @@ package ru.practicum.shareit.user;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User create(@RequestBody User user) throws ValidationException {
+    public User create(@RequestBody User user) throws BadRequestException {
         return userService.create(user);
     }
 

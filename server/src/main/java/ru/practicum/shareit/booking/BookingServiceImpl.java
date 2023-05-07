@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -33,11 +33,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto create(Booking booking, long ownerId) throws ValidationException {
+    public BookingDto create(Booking booking, long ownerId) throws BadRequestException {
         checkIdsWhileCreate(booking, ownerId);
-        if (booking.getStart() == null || booking.getEnd() == null || booking.getStart().equals(booking.getEnd())) {
-            throw new ValidationException("Wrong time");
-        }
         checkAvailable(booking);
         Item item = itemService.findItem(booking.getItemId(), ownerId);
         booking.setItem(itemService.findItem(booking.getItemId(), ownerId));
@@ -52,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto update(long bookingId, boolean approved, long ownerId) throws ValidationException {
+    public BookingDto update(long bookingId, boolean approved, long ownerId) throws BadRequestException {
         Booking booking = repository.findById(bookingId).orElseThrow(() -> new ObjectNotFoundException("Wrong id"));
         booking.setUser(userService.findUser(booking.getBookerId()));
         booking.setItem(itemService.findById(booking.getItemId()));
@@ -61,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ObjectNotFoundException("Wrong id");
         }
         if (bookingDto.getStatus() == BookingStatus.APPROVED && approved || bookingDto.getItem().getOwner() != ownerId) {
-            throw new ValidationException("Wrong id");
+            throw new BadRequestException("Wrong id");
         }
         if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
@@ -85,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findAll(String state, long ownerId, PageRequest pageRequest) throws ValidationException {
+    public List<BookingDto> findAll(String state, long ownerId, PageRequest pageRequest) throws BadRequestException {
         List<BookingDto> bookingDtos = findAllGeneral(state, ownerId);
         List<BookingDto> listForReturn = new ArrayList<>();
         for (BookingDto bookingDto : bookingDtos) {
@@ -97,7 +94,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findAllWithOwner(String state, long ownerId, PageRequest pageRequest) throws ValidationException {
+    public List<BookingDto> findAllWithOwner(String state, long ownerId, PageRequest pageRequest) throws BadRequestException {
         List<BookingDto> bookingDtos = findAllGeneral(state, ownerId);
         List<BookingDto> listForReturn = new ArrayList<>();
         for (BookingDto bookingDto : bookingDtos) {
@@ -108,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
         return getListFromPage(pageRequest, listForReturn);
     }
 
-    private List<BookingDto> findAllGeneral(String state, long ownerId) throws ValidationException {
+    private List<BookingDto> findAllGeneral(String state, long ownerId) throws BadRequestException {
 
         List<Booking> bookings = repository.findAllByOrderByStartDesc();
         List<BookingDto> bookingDtos = new ArrayList<>();
@@ -160,7 +157,7 @@ public class BookingServiceImpl implements BookingService {
                 }
                 break;
             default:
-                throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
+                throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
         return bookingForReturn;
     }
@@ -177,10 +174,10 @@ public class BookingServiceImpl implements BookingService {
         Item item = itemService.findById(booking.getItemId());
     }
 
-    private void checkAvailable(Booking booking) throws ValidationException {
+    private void checkAvailable(Booking booking) throws BadRequestException {
         boolean checkAvailable = itemService.findById(booking.getItemId()).isAvailable();
         if (!checkAvailable || booking.getEnd().isBefore(booking.getStart())) {
-            throw new ValidationException("The item should be available");
+            throw new BadRequestException("The item should be available");
         }
     }
 }

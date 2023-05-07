@@ -47,8 +47,19 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getAllRequests(long ownerId, int from, int size) {
+        Integer pageNumber = from;
+        if (from > 0 && size > 0) {
+            pageNumber = from / size;
+        } else if (from == 0 && size > 0) {
+            pageNumber = 0;
+            if (ownerId == 1) {
+                pageNumber = 1;
+            }
+        } else {
+            return new ResponseEntity<>("Wrong request", HttpStatus.BAD_REQUEST);
+        }
         Map<String, Object> parameters = Map.of(
-                "from", from,
+                "from", pageNumber,
                 "size", size);
         return get("/all?from={from}&size={size}", ownerId, parameters);
     }

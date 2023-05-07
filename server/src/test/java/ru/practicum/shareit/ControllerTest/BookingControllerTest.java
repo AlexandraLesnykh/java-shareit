@@ -79,34 +79,6 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.id", is(booking.getId()), Long.class))
                 .andExpect(jsonPath("$.item.id", is(booking.getItemId()), Long.class));
     }
-/*
-    @Test
-    @SneakyThrows
-    void createTestFailWrongStart() {
-        Long ownerId = 1L;
-        booking.setStart(LocalDateTime.now().minusDays(5));
-        mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(booking))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    @SneakyThrows
-    void createTestFailWrongEnd() {
-        Long ownerId = 1L;
-        booking.setEnd(LocalDateTime.now().minusDays(5));
-        mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(booking))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }*/
 
     @Test
     @SneakyThrows

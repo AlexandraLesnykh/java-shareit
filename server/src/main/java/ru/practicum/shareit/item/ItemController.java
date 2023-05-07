@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comments.dto.CommentDto;
 import ru.practicum.shareit.comments.model.Comment;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
@@ -40,11 +40,7 @@ public class ItemController {
 
     @PostMapping
     public Item create(@RequestBody Item item, @RequestHeader(value = "X-Sharer-User-Id") long ownerId)
-            throws ValidationException {
-
-        if (!item.isAvailable() || item.getName().isEmpty() || item.getDescription() == null) {
-            throw new ValidationException("Error");
-        }
+            throws BadRequestException {
         return itemService.create(item, ownerId);
     }
 
@@ -61,7 +57,7 @@ public class ItemController {
 
     @PostMapping(value = "/{id}/comment")
     public CommentDto addComment(@RequestBody Comment comment, @PathVariable("id") Long id,
-                                 @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws ValidationException {
+                                 @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws BadRequestException {
         return itemService.addComment(comment, id, ownerId);
     }
 }

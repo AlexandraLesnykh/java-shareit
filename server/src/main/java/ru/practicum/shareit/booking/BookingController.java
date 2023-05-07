@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 
 import java.util.List;
 
@@ -28,23 +28,23 @@ public class BookingController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookingDto create(@RequestBody Booking booking,
-                             @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws ValidationException {
+                             @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws BadRequestException {
         return bookingService.create(booking, ownerId);
     }
 
     @PatchMapping(value = "/{id}")
     public BookingDto update(@PathVariable("id") long bookingId,
                              @RequestHeader(value = "X-Sharer-User-Id") long ownerId,
-                             @RequestParam(value = "approved") boolean approved) throws ValidationException {
+                             @RequestParam(value = "approved") boolean approved) throws BadRequestException {
         return bookingService.update(bookingId, approved, ownerId);
     }
 
     @GetMapping(value = "/{id}")
     public BookingDto getBookingById(@PathVariable("id") long bookingId,
-                                     @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws ValidationException {
+                                     @RequestHeader(value = "X-Sharer-User-Id") long ownerId) throws BadRequestException {
         BookingDto bookingDto = bookingService.getBookingById(bookingId, ownerId);
         if (bookingDto == null) {
-            throw new ValidationException("Wrong id");
+            throw new BadRequestException("Wrong id");
         }
         return bookingDto;
     }
@@ -54,7 +54,7 @@ public class BookingController {
                                              @RequestParam(value = "state", defaultValue = "ALL", required = false)
                                              String state,
                                              @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                             @RequestParam(name = "size", defaultValue = "10") Integer size) throws ValidationException {
+                                             @RequestParam(name = "size", defaultValue = "10") Integer size) throws BadRequestException {
         return bookingService.findAllWithOwner(state, ownerId, PageRequest.of(from / size, size));
     }
 
@@ -63,7 +63,7 @@ public class BookingController {
                                     @RequestParam(value = "state", defaultValue = "ALL", required = false)
                                     String state,
                                     @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                    @RequestParam(name = "size", defaultValue = "10") Integer size) throws ValidationException {
+                                    @RequestParam(name = "size", defaultValue = "10") Integer size) throws BadRequestException {
         Integer pageNumber = from;
         return bookingService.findAll(state, ownerId, PageRequest.of(from / size, size));
     }

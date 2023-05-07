@@ -3,7 +3,7 @@ package ru.practicum.shareit.ServiceTest.UserTest;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserServiceImpl;
@@ -64,7 +64,7 @@ public class UserServiceTest {
     @Test
     @Order(4)
     @DisplayName("4.Create user")
-    void createTest() throws ValidationException {
+    void createTest() throws BadRequestException {
 
         List<User> usersWithoutIds = getUsersWithoutIds();
         when(userRepository.save(usersWithoutIds.get(0))).thenReturn(getUser(1L));
@@ -79,9 +79,9 @@ public class UserServiceTest {
     void shouldThrowExceptionWhileCreatingUserWithEmptyName() {
         User user = getUsersWithoutIds().get(0);
         user.setName(null);
-        when(userRepository.save(user)).thenAnswer(invocationOnMock -> new ValidationException("Wrong request"));
+        when(userRepository.save(user)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong request"));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> userService.create(user));
         Assertions.assertEquals("Wrong request", exception.getMessage());
     }
@@ -92,9 +92,9 @@ public class UserServiceTest {
     void shouldThrowExceptionWhileCreatingUserWithEmptyEmail() {
         User user = getUsersWithoutIds().get(0);
         user.setEmail(null);
-        when(userRepository.save(user)).thenAnswer(invocationOnMock -> new ValidationException("Wrong request"));
+        when(userRepository.save(user)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong request"));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> userService.create(user));
         Assertions.assertEquals("Wrong request", exception.getMessage());
     }

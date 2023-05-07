@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comments.CommentRepository;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.ItemServiceImpl;
@@ -54,7 +54,7 @@ public class BookingServiceTest {
     @Test
     @Order(1)
     @DisplayName("1.Get all bookings state ALL")
-    void findAllTest() throws ValidationException {
+    void findAllTest() throws BadRequestException {
         Long ownerId = 1L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
@@ -77,7 +77,7 @@ public class BookingServiceTest {
         when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
         when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.findAll("ALLY", ownerId, PageRequest.of(0, 10)));
         Assertions.assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage());
     }
@@ -101,7 +101,7 @@ public class BookingServiceTest {
     @Test
     @Order(4)
     @DisplayName("4.Get all bookings state FUTURE")
-    void findAllTestStateFuture() throws ValidationException {
+    void findAllTestStateFuture() throws BadRequestException {
         Long ownerId = 3L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(2L));
@@ -116,7 +116,7 @@ public class BookingServiceTest {
     @Test
     @Order(5)
     @DisplayName("5.Get all bookings state PAST")
-    void findAllTestStatePast() throws ValidationException {
+    void findAllTestStatePast() throws BadRequestException {
         Long ownerId = 1L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
@@ -131,7 +131,7 @@ public class BookingServiceTest {
     @Test
     @Order(6)
     @DisplayName("6.Get all bookings state WAITING")
-    void findAllTestStateWaiting() throws ValidationException {
+    void findAllTestStateWaiting() throws BadRequestException {
         Long ownerId = 3L;
         Long itemId = 1L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(2L));
@@ -146,7 +146,7 @@ public class BookingServiceTest {
     @Test
     @Order(7)
     @DisplayName("7.Get all bookings state REJECTED")
-    void findAllTestStateRejected() throws ValidationException {
+    void findAllTestStateRejected() throws BadRequestException {
         Long ownerId = 2L;
         Long itemId = 3L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(4L));
@@ -177,7 +177,7 @@ public class BookingServiceTest {
     @Test
     @Order(9)
     @DisplayName("9.Get all bookings with ownerId")
-    void findAllWithOwnerTest() throws ValidationException {
+    void findAllWithOwnerTest() throws BadRequestException {
         Long ownerId = 1L;
         Long itemId = 3L;
         List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(4L));
@@ -239,7 +239,7 @@ public class BookingServiceTest {
     @Test
     @Order(13)
     @DisplayName("13.Create test")
-    void createTest() throws ValidationException {
+    void createTest() throws BadRequestException {
         Long id = 1L;
         List<Booking> bookingsWithoutIds = BookingServiceTestUtils.getBookingsWithoutIds();
         Item item = getItem(1L);
@@ -267,9 +267,9 @@ public class BookingServiceTest {
                 .thenReturn(Optional.ofNullable(getUser(1L)));
         Booking booking = bookingsWithoutIds.get(0);
         booking.setStart(null);
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new ValidationException("Wrong time"));
+        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong time"));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
         Assertions.assertEquals("Wrong time", exception.getMessage());
     }
@@ -287,9 +287,9 @@ public class BookingServiceTest {
                 .thenReturn(Optional.ofNullable(getUser(1L)));
         Booking booking = bookingsWithoutIds.get(0);
         booking.setEnd(null);
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new ValidationException("Wrong time"));
+        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong time"));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
         Assertions.assertEquals("Wrong time", exception.getMessage());
     }
@@ -307,9 +307,9 @@ public class BookingServiceTest {
                 .thenReturn(Optional.ofNullable(getUser(1L)));
         Booking booking = bookingsWithoutIds.get(0);
         booking.setEnd(booking.getStart());
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new ValidationException("Wrong time"));
+        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong time"));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
         Assertions.assertEquals("Wrong time", exception.getMessage());
     }
@@ -327,9 +327,9 @@ public class BookingServiceTest {
                 .thenReturn(Optional.ofNullable(getUser(1L)));
         Booking booking = bookingsWithoutIds.get(0);
         item.setAvailable(false);
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new ValidationException("The item should be available"));
+        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("The item should be available"));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
         Assertions.assertEquals("The item should be available", exception.getMessage());
     }
@@ -347,9 +347,9 @@ public class BookingServiceTest {
                 .thenReturn(Optional.ofNullable(getUser(1L)));
         Booking booking = bookingsWithoutIds.get(0);
         booking.setEnd(booking.getStart().minusDays(2));
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new ValidationException("The item should be available"));
+        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("The item should be available"));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
         Assertions.assertEquals("The item should be available", exception.getMessage());
     }
@@ -415,7 +415,7 @@ public class BookingServiceTest {
     @Test
     @Order(22)
     @DisplayName("22.Update test")
-    void updateTest() throws ValidationException {
+    void updateTest() throws BadRequestException {
         Long id = 2L;
         boolean approved = false;
         Booking booking = BookingServiceTestUtils.getBooking(id);
@@ -453,7 +453,7 @@ public class BookingServiceTest {
         booking.setItem(item);
         when(bookingRepository.save(booking)).thenReturn(booking);
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.update(id, approved, 2L));
         Assertions.assertEquals("Wrong id", exception.getMessage());
     }
@@ -499,7 +499,7 @@ public class BookingServiceTest {
         booking.setItem(item);
         when(bookingRepository.save(booking)).thenReturn(booking);
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> bookingService.update(id, approved, 1L));
         Assertions.assertEquals("Wrong id", exception.getMessage());
     }
@@ -507,7 +507,7 @@ public class BookingServiceTest {
     @Test
     @Order(26)
     @DisplayName("26.Update test with approved status")
-    void updateTest2() throws ValidationException {
+    void updateTest2() throws BadRequestException {
         Long id = 4L;
         boolean approved = true;
         Booking booking = BookingServiceTestUtils.getBooking(id);

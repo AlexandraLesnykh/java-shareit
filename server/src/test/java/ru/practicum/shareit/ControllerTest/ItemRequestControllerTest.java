@@ -86,37 +86,6 @@ public class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.description", is(itemRequest.getDescription())));
     }
 
- /*   @Test
-    @SneakyThrows
-    void createTestFailEmptyDescription() {
-        Long ownerId = 1L;
-        itemRequest.setDescription(null);
-        mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(itemRequest))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    @SneakyThrows
-    void createTestFailLongDescription() {
-        Long ownerId = 1L;
-        itemRequest.setDescription("djjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjdddddddddddddddddddddddddd" +
-                "ddddddddddddjjjdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjddddddddddddddddddddddddddllln" +
-                "dddddddddddddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjddddddddddddddddddddddddddssssssssss" +
-                "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssddddddddddddddd");
-        mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(itemRequest))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-*/
     @Test
     @SneakyThrows
     void getAllRequestsTest() {

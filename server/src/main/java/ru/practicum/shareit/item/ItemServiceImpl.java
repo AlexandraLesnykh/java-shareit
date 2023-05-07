@@ -10,7 +10,7 @@ import ru.practicum.shareit.comments.CommentRepository;
 import ru.practicum.shareit.comments.dto.CommentDto;
 import ru.practicum.shareit.comments.model.Comment;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -75,7 +75,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item create(Item item, long ownerId) throws ValidationException {
+    public Item create(Item item, long ownerId) throws BadRequestException {
         User checkUser = userRepository.findById(ownerId).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
         item.setOwner(ownerId);
         repository.save(item);
@@ -130,14 +130,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto addComment(Comment comment, long itemId, long ownerId) throws ValidationException {
+    public CommentDto addComment(Comment comment, long itemId, long ownerId) throws BadRequestException {
         if (comment.getText().isEmpty()) {
-            throw new ValidationException("Text shouldn't be empty");
+            throw new BadRequestException("Text shouldn't be empty");
         }
         User user = userRepository.findById(ownerId).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
         Optional<Booking> booking = bookingRepository.findFirstByBookerIdAndItemIdAndEndBefore(ownerId, itemId, LocalDateTime.now());
         if (booking.isEmpty()) {
-            throw new ValidationException("Wrong id");
+            throw new BadRequestException("Wrong id");
         }
         comment.setAuthorId(ownerId);
         comment.setAuthor(user);

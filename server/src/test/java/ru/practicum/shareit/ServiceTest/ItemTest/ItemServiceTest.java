@@ -10,7 +10,7 @@ import ru.practicum.shareit.comments.CommentRepository;
 import ru.practicum.shareit.comments.dto.CommentDto;
 import ru.practicum.shareit.comments.model.Comment;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemServiceImpl;
@@ -125,7 +125,7 @@ public class ItemServiceTest {
     @Test
     @Order(6)
     @DisplayName("6.Create item")
-    void createTest() throws ValidationException {
+    void createTest() throws BadRequestException {
 
         Long ownerId = 1L;
         List<Item> itemsWithoutIds = ItemServiceTestUtils.getItemsWithoutIds();
@@ -284,7 +284,7 @@ public class ItemServiceTest {
     @Test
     @Order(15)
     @DisplayName("15. Add comment")
-    void addCommentTest() throws ValidationException {
+    void addCommentTest() throws BadRequestException {
         Long ownerId = 1L;
         Long itemId = 1L;
         List<Comment> commentsWithoutIds = CommentUtils.getCommentsWithoutIds();
@@ -338,7 +338,7 @@ public class ItemServiceTest {
         comment.setAuthor(UserServiceTestUtils.getUser(ownerId));
         when(commentRepository.save(comment)).thenReturn(CommentUtils.getComment(1L));
 
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
                 () -> itemService.addComment(comment, itemId, ownerId));
         Assertions.assertEquals("Text shouldn't be empty", exception.getMessage());
     }

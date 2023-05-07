@@ -3,7 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.ValidationException;
+import ru.practicum.shareit.exeptions.BadRequestException;
 
 import java.util.List;
 
@@ -29,9 +29,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) throws ValidationException {
+    public User create(User user) throws BadRequestException {
         if (user.getEmail() == null || user.getName() == null) {
-            throw new ValidationException("Wrong request");
+            throw new BadRequestException("Wrong request");
         }
         return repository.save(user);
     }

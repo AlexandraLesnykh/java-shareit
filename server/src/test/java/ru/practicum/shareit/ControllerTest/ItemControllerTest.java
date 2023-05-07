@@ -77,37 +77,6 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.description", is(item.getDescription())));
     }
 
-  /*  @Test
-    @SneakyThrows
-    void createTestFailLongName() {
-        Long ownerId = 2L;
-        item.setName("dkdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkdddddddddddddddddd");
-        mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(item))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    @SneakyThrows
-    void createTestFailLongDescription() {
-        Long ownerId = 2L;
-        item.setDescription("dkdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkddddddddkdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
-                "kkkkdddddddddddddddddkdkkkkkkkkdkdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkdddddddkkkkkkkkkkkkkkkkkk" +
-                "dkdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkdddddddkkkkkkkkkkkkkkddddddddd");
-        // when(itemService.create(any(), eq(2L))).thenReturn(item);
-        mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(item))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-*/
     @Test
     @SneakyThrows
     void createTestFailEmptyName() {
@@ -211,25 +180,5 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.id", is(comment.getId()), Long.class))
                 .andExpect(jsonPath("$.text", is(comment.getText())));
     }
-/*
-    @Test
-    @SneakyThrows
-    void addCommentTestFailLongText() {
-        mapper.registerModule(new JavaTimeModule());
-        Comment comment = new Comment(1L, "Really interesting bookmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" +
-                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" +
-                "bbbmmmmmmmmmmmmmmmmmmmmmmmmmmmmmnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn" +
-                "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnmmmmmmmmmmmmm",
-                1L, 1L, item, user, LocalDateTime.now().minusDays(3));
-        Long ownerId = 2L;
-        Long id = 1L;
-        mvc.perform(post("/items/{id}/comment", id)
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(comment))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-*/
+
 }
