@@ -79,20 +79,6 @@ public class ItemControllerTest {
 
     @Test
     @SneakyThrows
-    void createTestFailEmptyName() {
-        Long ownerId = 2L;
-        item.setName("");
-        mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", ownerId)
-                        .content(mapper.writeValueAsString(item))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
-    @SneakyThrows
     void findAllTest() {
         Long ownerId = 2L;
         List<Item> itemList = List.of(item);

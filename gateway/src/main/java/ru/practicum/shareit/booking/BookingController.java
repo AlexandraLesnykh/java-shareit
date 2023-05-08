@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.validator.StateValidation;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,6 +26,7 @@ public class BookingController {
 	private final BookingClient bookingClient;
 
 	@GetMapping
+	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Object> findAll(@RequestHeader("X-Sharer-User-Id") long userId,
 										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,

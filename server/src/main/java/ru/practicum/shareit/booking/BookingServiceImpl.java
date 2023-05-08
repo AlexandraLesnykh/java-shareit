@@ -156,8 +156,6 @@ public class BookingServiceImpl implements BookingService {
                     }
                 }
                 break;
-            default:
-                throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
         return bookingForReturn;
     }

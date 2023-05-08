@@ -47,7 +47,7 @@ public class BookingServiceTest {
         userRepository = mock(UserRepository.class);
         commentRepository = mock(CommentRepository.class);
         userService = new UserServiceImpl(userRepository);
-        itemService = new ItemServiceImpl(itemRepository, bookingRepository, commentRepository, userRepository);
+        itemService = new ItemServiceImpl(itemRepository, bookingRepository, commentRepository, userService);
         bookingService = new BookingServiceImpl(bookingRepository, userService, itemService);
     }
 
@@ -64,22 +64,6 @@ public class BookingServiceTest {
 
         List<BookingDto> bookings = bookingService.findAll("ALL", ownerId, PageRequest.of(0, 10));
         Assertions.assertEquals(1, bookings.size());
-    }
-
-    @Test
-    @Order(2)
-    @DisplayName("2.Get all wrong state")
-    void shouldThrowExceptionWrongState() {
-        Long ownerId = 1L;
-        Long itemId = 1L;
-        List<Booking> bookingList = Arrays.asList(BookingServiceTestUtils.getBooking(1L));
-        when(bookingRepository.findAllByOrderByStartDesc()).thenReturn(bookingList);
-        when(userRepository.findById(ownerId)).thenReturn(Optional.ofNullable(getUser(ownerId)));
-        when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(getItem(itemId)));
-
-        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
-                () -> bookingService.findAll("ALLY", ownerId, PageRequest.of(0, 10)));
-        Assertions.assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage());
     }
 
     @Test
@@ -252,66 +236,6 @@ public class BookingServiceTest {
         BookingDto bookingDto = bookingService.create(bookingsWithoutIds.get(0), BookingServiceTestUtils.getBooking(id).getBookerId());
         Assertions.assertEquals(1, bookingDto.getId());
         Assertions.assertEquals(BookingStatus.APPROVED, bookingDto.getStatus());
-    }
-
-    @Test
-    @Order(14)
-    @DisplayName("14.Create test fail start is null")
-    void shouldThrowExceptionNullStart() {
-        Long id = 1L;
-        List<Booking> bookingsWithoutIds = BookingServiceTestUtils.getBookingsWithoutIds();
-        Item item = getItem(1L);
-        when(itemRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(item));
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(getUser(1L)));
-        Booking booking = bookingsWithoutIds.get(0);
-        booking.setStart(null);
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong time"));
-
-        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
-                () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
-        Assertions.assertEquals("Wrong time", exception.getMessage());
-    }
-
-    @Test
-    @Order(15)
-    @DisplayName("15.Create test fail end is null")
-    void shouldThrowExceptionNullEnd() {
-        Long id = 1L;
-        List<Booking> bookingsWithoutIds = BookingServiceTestUtils.getBookingsWithoutIds();
-        Item item = getItem(1L);
-        when(itemRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(item));
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(getUser(1L)));
-        Booking booking = bookingsWithoutIds.get(0);
-        booking.setEnd(null);
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong time"));
-
-        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
-                () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
-        Assertions.assertEquals("Wrong time", exception.getMessage());
-    }
-
-    @Test
-    @Order(16)
-    @DisplayName("16.Create test fail end equals start")
-    void shouldThrowExceptionEndEqualsStart() {
-        Long id = 1L;
-        List<Booking> bookingsWithoutIds = BookingServiceTestUtils.getBookingsWithoutIds();
-        Item item = getItem(1L);
-        when(itemRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(item));
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(getUser(1L)));
-        Booking booking = bookingsWithoutIds.get(0);
-        booking.setEnd(booking.getStart());
-        when(bookingRepository.save(booking)).thenAnswer(invocationOnMock -> new BadRequestException("Wrong time"));
-
-        BadRequestException exception = Assertions.assertThrows(BadRequestException.class,
-                () -> bookingService.create(booking, BookingServiceTestUtils.getBooking(id).getBookerId()));
-        Assertions.assertEquals("Wrong time", exception.getMessage());
     }
 
     @Test

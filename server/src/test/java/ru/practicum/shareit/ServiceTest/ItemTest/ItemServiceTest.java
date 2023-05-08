@@ -17,6 +17,8 @@ import ru.practicum.shareit.item.ItemServiceImpl;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class ItemServiceTest {
     private ItemServiceImpl itemService;
     private ItemRepository itemRepository;
     private UserRepository userRepository;
+    private UserService userService;
     private BookingRepository bookingRepository;
     private CommentRepository commentRepository;
 
@@ -43,7 +46,8 @@ public class ItemServiceTest {
         userRepository = mock(UserRepository.class);
         bookingRepository = mock(BookingRepository.class);
         commentRepository = mock(CommentRepository.class);
-        itemService = new ItemServiceImpl(itemRepository, bookingRepository, commentRepository, userRepository);
+        userService = new UserServiceImpl(userRepository);
+        itemService = new ItemServiceImpl(itemRepository, bookingRepository, commentRepository, userService);
     }
 
     @Test

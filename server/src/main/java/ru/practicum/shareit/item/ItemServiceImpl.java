@@ -15,6 +15,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -28,13 +29,13 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ItemServiceImpl(ItemRepository repository, BookingRepository bookingRepository, CommentRepository commentRepository, UserRepository userRepository) {
+    public ItemServiceImpl(ItemRepository repository, BookingRepository bookingRepository, CommentRepository commentRepository, UserService userService) {
         this.repository = repository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -76,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item create(Item item, long ownerId) throws BadRequestException {
-        User checkUser = userRepository.findById(ownerId).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
+        User checkUser = userService.findUser(ownerId);
         item.setOwner(ownerId);
         repository.save(item);
         return repository.save(item);
@@ -134,7 +135,7 @@ public class ItemServiceImpl implements ItemService {
         if (comment.getText().isEmpty()) {
             throw new BadRequestException("Text shouldn't be empty");
         }
-        User user = userRepository.findById(ownerId).orElseThrow(() -> new ObjectNotFoundException("Wrong ID"));
+        User user = userService.findUser(ownerId);
         Optional<Booking> booking = bookingRepository.findFirstByBookerIdAndItemIdAndEndBefore(ownerId, itemId, LocalDateTime.now());
         if (booking.isEmpty()) {
             throw new BadRequestException("Wrong id");
@@ -183,7 +184,7 @@ public class ItemServiceImpl implements ItemService {
         }
         List<CommentDto> commentDtos = new ArrayList<>();
         for (Comment comment : comments) {
-            User user = userRepository.findById(comment.getAuthorId()).orElseThrow(() -> new javax.validation.ValidationException("Wrong ID"));
+            User user = userService.findUser(comment.getAuthorId());
             comment.setAuthor(user);
             comment.setAuthorId(user.getId());
             comment.setItemId(id);
