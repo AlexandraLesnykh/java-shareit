@@ -28,9 +28,8 @@ public class BookingController {
 										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-		BookingState state = BookingState.from(stateParam).get();
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-		return bookingClient.findAll(userId, state, from, size);
+		return bookingClient.findAll(userId, BookingState.valueOf(stateParam), from, size);
 	}
 
 	@GetMapping("/owner")
@@ -38,9 +37,8 @@ public class BookingController {
 										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-		BookingState state = BookingState.from(stateParam).get();
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-		return bookingClient.findAllWithOwner(userId, state, from, size);
+		return bookingClient.findAllWithOwner(userId, BookingState.valueOf(stateParam), from, size);
 	}
 
 	@PostMapping
