@@ -31,7 +31,7 @@ public class BookingClient extends BaseClient {
     }
 
     @Validated
-    public ResponseEntity<Object> findAll(long userId, @StateValidation BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> findAll(long userId, @StateValidation(message = "Unknown state: UNSUPPORTED_STATUS") BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
@@ -41,7 +41,7 @@ public class BookingClient extends BaseClient {
     }
 
     @Validated
-    public ResponseEntity<Object> findAllWithOwner(long userId, @StateValidation BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> findAllWithOwner(long userId, @StateValidation(message = "Unknown state: UNSUPPORTED_STATUS") BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
