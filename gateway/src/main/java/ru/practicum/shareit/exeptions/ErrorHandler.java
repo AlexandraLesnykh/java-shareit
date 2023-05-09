@@ -18,9 +18,4 @@ public class ErrorHandler {
         return new ResponseEntity<>("Unknown state: UNSUPPORTED_STATUS", HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler
-    @ResponseStatus
-    public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
-        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
-    }
 }
