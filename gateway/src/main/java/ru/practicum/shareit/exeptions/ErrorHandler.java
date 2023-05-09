@@ -15,10 +15,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public ResponseEntity<List> processUnmergeException(final MethodArgumentNotValidException e) {
-        List list = e.getBindingResult().getAllErrors().stream()
-                .map(fieldError -> fieldError.getDefaultMessage())
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> processUnmergeException(final MethodArgumentNotValidException e) {
+        return new ResponseEntity<>("Unknown state: UNSUPPORTED_STATUS", HttpStatus.BAD_REQUEST);
     }
 }
