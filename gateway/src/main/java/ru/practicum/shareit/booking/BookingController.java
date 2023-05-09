@@ -25,13 +25,11 @@ public class BookingController {
 	private final BookingClient bookingClient;
 
 	@GetMapping
-	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Object> findAll(@RequestHeader("X-Sharer-User-Id") long userId,
 										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-		BookingState state = BookingState.from(stateParam)
-				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+		BookingState state = BookingState.from(stateParam).get();
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
 		return bookingClient.findAll(userId, state, from, size);
 	}
@@ -41,8 +39,7 @@ public class BookingController {
 										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-		BookingState state = BookingState.from(stateParam)
-				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+		BookingState state = BookingState.from(stateParam).get();
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
 		return bookingClient.findAllWithOwner(userId, state, from, size);
 	}
