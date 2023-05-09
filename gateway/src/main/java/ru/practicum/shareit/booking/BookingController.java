@@ -29,7 +29,7 @@ public class BookingController {
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-		if(BookingState.from(stateParam).isEmpty()){
+		if (BookingState.from(stateParam).isEmpty()) {
 			stateParam = "ALL";
 		}
 		BookingState state = BookingState.from(stateParam).get();
@@ -41,7 +41,7 @@ public class BookingController {
 										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-		if(BookingState.from(stateParam).isEmpty()){
+		if (BookingState.from(stateParam).isEmpty()) {
 			stateParam = "ALL";
 		}
 		BookingState state = BookingState.from(stateParam).get();
