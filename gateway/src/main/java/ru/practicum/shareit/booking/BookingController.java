@@ -24,6 +24,7 @@ public class BookingController {
 	private final BookingClient bookingClient;
 
 	@GetMapping
+	@Validated
 	public ResponseEntity<Object> findAll(@RequestHeader("X-Sharer-User-Id") long userId,
 										  @RequestParam(name = "state", defaultValue = "all") @StateValidation String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
@@ -34,6 +35,7 @@ public class BookingController {
 	}
 
 	@GetMapping("/owner")
+	@Validated
 	public ResponseEntity<Object> findAllWithOwner(@RequestHeader("X-Sharer-User-Id") long userId,
 										  @RequestParam(name = "state", defaultValue = "all") @StateValidation String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
