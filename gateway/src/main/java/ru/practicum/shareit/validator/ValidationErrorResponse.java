@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class ValidationErrorResponse {
-    private final Violation violation;
+    private final String message;
 }
 
 
