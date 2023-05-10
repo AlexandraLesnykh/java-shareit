@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+
 @RestControllerAdvice
 public class ErrorHandler {
 
@@ -23,6 +26,20 @@ public class ErrorHandler {
     public ErrorResponse onConstraintViolationException(ConstraintViolationException e) {
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
     }*/
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationException onConstraintViolationException(ConstraintViolationException e) {
+        return new ValidationException("Unknown state: UNSUPPORTED_STATUS");
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse onValidationException(ValidationException e) {
+        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
+    }
 
 
 }
