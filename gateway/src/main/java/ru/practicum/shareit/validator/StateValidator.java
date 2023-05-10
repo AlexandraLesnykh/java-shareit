@@ -1,12 +1,9 @@
 package ru.practicum.shareit.validator;
 
-import ru.practicum.shareit.booking.dto.BookingState;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class StateValidator implements ConstraintValidator<StateValidation, String> {
     public boolean isValid(String stateName, ConstraintValidatorContext cxt) {
