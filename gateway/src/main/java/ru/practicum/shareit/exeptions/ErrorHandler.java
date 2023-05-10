@@ -10,7 +10,6 @@ import ru.practicum.shareit.validator.ValidationErrorResponse;
 import ru.practicum.shareit.validator.Violation;
 
 import javax.validation.ConstraintViolationException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -20,9 +19,9 @@ public class ErrorHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorResponse onMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        List<Violation> list = e.getBindingResult().getFieldErrors().stream()
+        Violation list = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> new Violation(error.getDefaultMessage()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()).get(0);
         return new ValidationErrorResponse(list);
     }
 
@@ -30,13 +29,13 @@ public class ErrorHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorResponse onConstraintViolationException(ConstraintViolationException e) {
-        List<Violation> list = e.getConstraintViolations().stream()
+        Violation list = e.getConstraintViolations().stream()
                 .map(
                         violation -> new Violation(
                                 violation.getMessage()
                         )
                 )
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()).get(0);
         return new ValidationErrorResponse(list);
     }
 
