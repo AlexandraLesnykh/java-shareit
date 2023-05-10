@@ -11,8 +11,6 @@ import java.util.Optional;
 public class StateValidator implements ConstraintValidator<StateValidation, String> {
     public boolean isValid(String stateName, ConstraintValidatorContext cxt) {
         List list = Arrays.asList("ALL", "CURRENT", "FUTURE", "PAST", "WAITING", "REJECTED");
-        Optional<BookingState> state = BookingState.from(stateName);
-        Optional<String> s = Optional.ofNullable(stateName);
-        return list.contains(stateName) || state.isEmpty() || s.isEmpty();
+        return list.contains(stateName);
     }
 }

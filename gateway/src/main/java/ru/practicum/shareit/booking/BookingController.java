@@ -24,23 +24,23 @@ public class BookingController {
 	private final BookingClient bookingClient;
 
 	@GetMapping
-	@Validated
 	public ResponseEntity<Object> findAll(@RequestHeader("X-Sharer-User-Id") long userId,
-										  @RequestParam(name = "state", defaultValue = "all") @StateValidation String stateParam,
+										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-		BookingState state = BookingState.from(stateParam).get();
+		BookingState state = BookingState.from(stateParam)
+				.orElseThrow(() -> new IllegalArgumentException("Unknown state" + stateParam));
 		return bookingClient.findAll(userId, state, from, size);
 	}
 
 	@GetMapping("/owner")
-	@Validated
 	public ResponseEntity<Object> findAllWithOwner(@RequestHeader("X-Sharer-User-Id") long userId,
-										  @RequestParam(name = "state", defaultValue = "all") @StateValidation String stateParam,
+										  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-		BookingState state = BookingState.from(stateParam).get();
+		BookingState state = BookingState.from(stateParam)
+								.orElseThrow(() -> new IllegalArgumentException("Unknown state" + stateParam));
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
 		return bookingClient.findAllWithOwner(userId, state, from, size);
 	}
