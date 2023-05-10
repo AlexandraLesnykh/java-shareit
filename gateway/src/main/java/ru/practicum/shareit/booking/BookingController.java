@@ -29,7 +29,6 @@ public class BookingController {
                                           @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         BookingState state = BookingState.from(stateParam).get();
-        //     .orElseThrow(() -> new IllegalArgumentException("Unknown state" + stateParam));
         return bookingClient.findAll(userId, state, from, size);
     }
 

@@ -40,6 +40,7 @@ public class BookingClient extends BaseClient {
         return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
 
+    @Validated
     public ResponseEntity<Object> findAllWithOwner(long userId, @StateValidation BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
