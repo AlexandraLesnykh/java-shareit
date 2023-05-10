@@ -12,6 +12,7 @@ public class StateValidator implements ConstraintValidator<StateValidation, Stri
     public boolean isValid(String stateName, ConstraintValidatorContext cxt) {
         List list = Arrays.asList("ALL", "CURRENT", "FUTURE", "PAST", "WAITING", "REJECTED");
         Optional<BookingState> state = BookingState.from(stateName);
-        return list.contains(stateName) || state == null;
+        Optional<String> s = Optional.ofNullable(stateName);
+        return list.contains(stateName) || state.isEmpty() || s.isEmpty();
     }
 }
