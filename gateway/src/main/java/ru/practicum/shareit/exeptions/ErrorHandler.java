@@ -29,16 +29,5 @@ public class ErrorHandler {
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
     }*/
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
-        //     return new ResponseEntity<>(new ErrorResponse("Unknown state: UNSUPPORTED_STATUS"), HttpStatus.BAD_REQUEST);
-        Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-        String errorMessage = "";
-        if (!violations.isEmpty()) {
-            errorMessage = "Unknown state: UNSUPPORTED_STATUS";
-        }
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-    }
 
 }
