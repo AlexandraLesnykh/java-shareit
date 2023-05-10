@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Set;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -20,17 +22,23 @@ public class ErrorHandler {
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
+  /*  @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onConstraintViolationException(ConstraintViolationException e) {
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
-    }
+    }*/
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> handleConstraintViolationException() {
-        return new ResponseEntity<>(new ErrorResponse("Unknown state: UNSUPPORTED_STATUS"), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
+        //     return new ResponseEntity<>(new ErrorResponse("Unknown state: UNSUPPORTED_STATUS"), HttpStatus.BAD_REQUEST);
+        Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+        String errorMessage = "";
+        if (!violations.isEmpty()) {
+            errorMessage = "Unknown state: UNSUPPORTED_STATUS";
+        }
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
 }
