@@ -7,12 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.validator.StateValidation;
 
 import java.util.Map;
 
@@ -30,8 +28,7 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    @Validated
-    public ResponseEntity<Object> findAll(long userId, @StateValidation BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> findAll(long userId, BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
@@ -40,8 +37,7 @@ public class BookingClient extends BaseClient {
         return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
 
-    @Validated
-    public ResponseEntity<Object> findAllWithOwner(long userId, @StateValidation BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> findAllWithOwner(long userId, BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
