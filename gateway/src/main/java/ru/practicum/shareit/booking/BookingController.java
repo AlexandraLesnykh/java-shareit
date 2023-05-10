@@ -26,7 +26,7 @@ public class BookingController {
 
 	@GetMapping
 	public ResponseEntity<Object> findAll(@RequestHeader("X-Sharer-User-Id") long userId,
-										  @RequestParam(name = "state", defaultValue = "all") @StateValidation String stateParam,
+										  @RequestParam(name = "state", required = false, defaultValue = "all") @StateValidation String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -36,7 +36,7 @@ public class BookingController {
 
 	@GetMapping("/owner")
 	public ResponseEntity<Object> findAllWithOwner(@RequestHeader("X-Sharer-User-Id") long userId,
-										  @RequestParam(name = "state", defaultValue = "all") @StateValidation String stateParam,
+										  @RequestParam(name = "state", required = false, defaultValue = "all") @StateValidation String stateParam,
 										  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 										  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		BookingState state = BookingState.from(stateParam).get();
