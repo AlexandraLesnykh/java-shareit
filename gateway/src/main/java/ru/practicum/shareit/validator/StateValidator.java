@@ -7,7 +7,7 @@ import java.util.List;
 
 public class StateValidator implements ConstraintValidator<StateValidation, String> {
     public boolean isValid(String stateName, ConstraintValidatorContext cxt) {
-        List list = Arrays.asList("ALL","CURRENT","FUTURE", "PAST", "WAITING", "REJECTED");
+        List list = Arrays.asList("ALL","CURRENT","FUTURE", "PAST", "WAITING", "REJECTED", null, "");
         return list.contains(stateName);
     }
 }
