@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.validator.ValidationErrorResponse;
-import ru.practicum.shareit.validator.Violation;
 
 import javax.validation.ConstraintViolationException;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ErrorHandler {
