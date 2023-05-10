@@ -17,19 +17,14 @@ public class ErrorHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorResponse onMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        String list = e.getBindingResult().getFieldError().toString();
-        return new ValidationErrorResponse(list);
+        return new ValidationErrorResponse("Unknown state: UNSUPPORTED_STATUS");
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorResponse onConstraintViolationException(ConstraintViolationException e) {
-        String list = e.getConstraintViolations().stream()
-                .map(
-                        message -> message.getMessage()
-                ).toString();
-        return new ValidationErrorResponse(list);
+        return new ValidationErrorResponse("Unknown state: UNSUPPORTED_STATUS");
     }
 
 }
