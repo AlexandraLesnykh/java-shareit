@@ -15,5 +15,4 @@ public class ErrorHandler {
     public ErrorResponse onMethodArgumentNotValidException(final IllegalArgumentException e) {
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
     }
-    
 }
